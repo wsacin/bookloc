@@ -1,7 +1,6 @@
 package bookloc
 
 class Book {
-    Long id
     String title
     String publisher
     String isbn
@@ -10,5 +9,9 @@ class Book {
     Long rack
 
     static constraints = {
+        isRented nullable: true
+    }
+    static mapping = {
+        isRented defaultValue: "false"
     }
 }
