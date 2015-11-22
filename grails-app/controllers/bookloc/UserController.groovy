@@ -18,7 +18,7 @@ class UserController {
     }
 
     def show(User user) {
-        respond user
+        respond fachada.buscarUser(user)
     }
 
     def create() {
@@ -27,19 +27,20 @@ class UserController {
 
     @Transactional
     def save(User user) {
-        if (user == null) {
+        try{
+            fachada.salvarUser(user)
+        }
+        catch(IllegalArgumentException e1){
+            transactionStatus.setRollbackOnly()
+            respond user.errors, view:'create'
+            return
+
+        }
+        catch(NoSuchElementException e2){
             transactionStatus.setRollbackOnly()
             notFound()
             return
         }
-
-        if (user.hasErrors()) {
-            transactionStatus.setRollbackOnly()
-            respond user.errors, view:'create'
-            return
-        }
-
-        user.save flush:true
 
         request.withFormat {
             form multipartForm {
@@ -56,19 +57,19 @@ class UserController {
 
     @Transactional
     def update(User user) {
-        if (user == null) {
-            transactionStatus.setRollbackOnly()
-            notFound()
-            return
+        try{
+            fachada.salvarUser(user)
         }
-
-        if (user.hasErrors()) {
+        catch(IllegalArgumentException e1){
             transactionStatus.setRollbackOnly()
             respond user.errors, view:'edit'
             return
         }
-
-        user.save flush:true
+        catch(NoSuchElementException e2){
+            transactionStatus.setRollbackOnly()
+            notFound()
+            return
+        }
 
         request.withFormat {
             form multipartForm {
@@ -81,14 +82,14 @@ class UserController {
 
     @Transactional
     def delete(User user) {
-
-        if (user == null) {
+        try {
+            fachada.removerUser(user)
+        }
+        catch(NoSuchElementException e){
             transactionStatus.setRollbackOnly()
             notFound()
             return
         }
-
-        user.delete flush:true
 
         request.withFormat {
             form multipartForm {
