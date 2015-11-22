@@ -1,4 +1,4 @@
-package booklock
+package bookloc
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
