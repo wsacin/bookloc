@@ -8,6 +8,10 @@ public class RepBook implements IRep<Book>{
 		Book.all
 	}
 
+    public findByISBN(String bookISBN){
+        return Book.find{isbn == bookISBN}
+    }
+
     public Book find(Book book) {
         return book
     }
