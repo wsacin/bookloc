@@ -8,6 +8,10 @@ public class RepUser implements IRep<User>{
 		User.all
 	}
 
+    public findByName(String name){
+        return User.find{username == name}
+    }
+
     public User find(User user) {
         return user
     }

@@ -2,6 +2,8 @@ package services.fachada
 
 import bookloc.Book
 import bookloc.User
+import grails.converters.JSON
+import services.auth.JsonAuth
 import services.controladores.ControladorBook
 import services.controladores.ControladorUser
 
@@ -12,10 +14,12 @@ class Fachada {
 	private static Fachada instance;
 	private ControladorBook controladorBook
 	private ControladorUser controladorUser
+    private JsonAuth autenticador
 
     private Fachada(){
-		 controladorBook = new ControladorBook()
-		 controladorUser = new ControladorUser()
+		controladorBook = new ControladorBook()
+		controladorUser = new ControladorUser()
+        autenticador = new JsonAuth()
 	}
 
 	public static Fachada getInstance(){
@@ -41,15 +45,18 @@ class Fachada {
 	public List<Book> books(){
 		return controladorBook.books();
 	}
+    public HashMap autenticarUser(JSON json){
+        return autenticador.authuser(json)
+    }
 
     // user
-    public User buscarUser(Book user){
+    public User buscarUser(User user){
         return controladorUser.buscarUser(user);
     }
     public User criarUser(params){
         controladorUser.criarUser(params);
     }
-    public User salvarUser(Book user){
+    public User salvarUser(User user){
         controladorUser.salvarUser(user);
     }
     public void removerUser(User user){
